@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
     <body class="container">
 
         <header>
@@ -25,8 +26,14 @@
                         <input type="submit" class="btn btn-success" name='upload'/>
                     </div>
                 </form>
+                <div class = "<%= url === undefined ? 'hidden' : 'visible'%> ">
+                    Success visit : <a href='<%=url;%>'> Link </a>
+                    <%=url;%>
+                </div>
                 <% if (alert !== undefined && alert === true) { %>
-                    <script>alert('File uploaded')</script>
+                    <script>
+                        alert('Uploaded Succesfully');
+                    </script>
                 <% } %> 
             </div>
         </main>

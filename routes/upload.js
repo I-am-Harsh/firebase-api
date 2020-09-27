@@ -5,14 +5,15 @@ var router = express.Router();
 const path = require('path');
 const fs = require('fs');
 
-const keyPath = path.join(`${__dirname}/keyFileName.json`);
-fs.writeFileSync(keyPath , process.env.key);
+// const keyPath = path.join(`${__dirname}/keyFileName.json`);
+// fs.writeFileSync(keyPath , process.env.key);
 
 
 // initialize storage
 // keyPath = undefined ||
 const storage = new Storage({
-    keyFilename: keyPath,
+    // keyFilename: keyPath,
+    keyFilename : process.env.keyFileName,
     projectId: process.env.projectId
 });
 // const storage = new Storage();
@@ -35,7 +36,12 @@ router
 
 // ejs get
 .get('/', (req, res) => {
-	res.render('upload', { home : "nav-link", upload : "nav-link active", alert : false})
+	res.render('upload', { 
+        home : "nav-link",
+        upload : "nav-link active", 
+        alert : false,
+        url : undefined
+    })
 })
 
 .post('/', multer.single('image'), (req, res) => {
@@ -62,8 +68,12 @@ router
 	if (file) {	
 		uploadImageToStorage(file, public)
 		.then((result => {
-            console.log(result);
-			res.render('upload', { home : "nav-link", upload : "nav-link active", alert : true})
+            res.render('upload', { 
+                home : "nav-link", 
+                upload : "nav-link active", 
+                alert : true,
+                url : result
+            })
 		}))
 		.catch(err => next(err));
     }
