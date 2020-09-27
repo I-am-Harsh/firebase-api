@@ -2,16 +2,17 @@ const {Storage} = require('@google-cloud/storage');
 const Multer = require('multer');
 var express = require('express');
 var router = express.Router();
-const path = require('path');
-const fs = require('fs');
+// const path = require('path');
+// const fs = require('fs');
 
-const keyPath = path.join(`${__dirname}/keyFileName.json`);
-fs.writeFileSync(keyPath , process.env.key);
+// const keyPath = path.join(`${__dirname}/keyFileName.json`);
+// fs.writeFileSync(keyPath , process.env.key);
 
 
 // initialize storage
+// keyPath = undefined ||
 const storage = new Storage({
-    keyFilename: keyPath,
+    keyFilename:  process.env.keyFileName,
     projectId: process.env.projectId
 });
 // const storage = new Storage();
@@ -26,12 +27,21 @@ const multer = Multer({
     }
 });
 
+
+
+
 // route
 router
+
+// ejs get
+.get('/', (req, res) => {
+	res.render('upload', { home : "nav-link", upload : "nav-link active", alert : false})
+})
+
 .post('/', multer.single('image'), (req, res) => {
     const file = req.file;
     const public = req.body.public || true;
-	console.log('file recieved');
+	console.log(file);
 	if (file) {	
 		uploadImageToStorage(file, public)
 		.then((result => {
@@ -39,13 +49,28 @@ router
 			res.status(200).json({ success : true, err : false, url : result})
 		}))
 		.catch(err => res.status(500).json({success : false, err : err, url : null}));
-	}
+    }
 })
 
-.get('/', (req, res) => {
-	res.json({message : "ok"});
-})
 
+
+// ejs post
+.post('/server', multer.single('image'), (req, res, next) => {
+    const file = req.file;
+    const public = req.body.public || true;
+    console.log(file);
+	if (file) {	
+		uploadImageToStorage(file, public)
+		.then((result => {
+            console.log(result);
+			res.render('upload', { home : "nav-link", upload : "nav-link active", alert : true})
+		}))
+		.catch(err => next(err));
+    }
+    else{
+        res.render('upload', { home : "nav-link", upload : "nav-link active", alert : true})
+    }
+})
 
 
 const uploadImageToStorage = (file, public) => {
