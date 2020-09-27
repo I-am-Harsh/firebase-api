@@ -5,15 +5,15 @@ var router = express.Router();
 const path = require('path');
 const fs = require('fs');
 
-// const keyPath = path.join(`${__dirname}/keyFileName.json`);
-// fs.writeFileSync(keyPath , process.env.key);
+const keyPath = path.join(`${__dirname}/keyFileName.json`);
+fs.writeFileSync(keyPath , process.env.key);
 
 
 // initialize storage
 // keyPath = undefined ||
 const storage = new Storage({
-    // keyFilename: keyPath,
-    keyFilename : process.env.keyFileName,
+    keyFilename: keyPath,
+    // keyFilename : process.env.keyFileName,
     projectId: process.env.projectId
 });
 // const storage = new Storage();
