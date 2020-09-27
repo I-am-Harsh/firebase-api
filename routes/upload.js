@@ -2,17 +2,17 @@ const {Storage} = require('@google-cloud/storage');
 const Multer = require('multer');
 var express = require('express');
 var router = express.Router();
-// const path = require('path');
-// const fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 
-// const keyPath = path.join(`${__dirname}/keyFileName.json`);
-// fs.writeFileSync(keyPath , process.env.key);
+const keyPath = path.join(`${__dirname}/keyFileName.json`);
+fs.writeFileSync(keyPath , process.env.key);
 
 
 // initialize storage
 // keyPath = undefined ||
 const storage = new Storage({
-    keyFilename:  process.env.keyFileName,
+    keyFilename: keyPath,
     projectId: process.env.projectId
 });
 // const storage = new Storage();
