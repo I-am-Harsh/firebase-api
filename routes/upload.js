@@ -4,16 +4,17 @@ var express = require('express');
 var router = express.Router();
 const path = require('path');
 const fs = require('fs');
+// const buffer = require('buffer');
 
-const keyPath = path.join(`${__dirname}/keyFileName.json`);
-fs.writeFileSync(keyPath , process.env.key);
+// const keyPath = path.join(`${__dirname}/keyFileName.json`);
+// fs.writeFileSync(keyPath , process.env.key);
 
 
 // initialize storage
 // keyPath = undefined ||
 const storage = new Storage({
-    keyFilename: keyPath,
-    // keyFilename : process.env.keyFileName,
+    // keyFilename: keyPath,
+    keyFilename : process.env.keyFileName,
     projectId: process.env.projectId
 });
 // const storage = new Storage();
@@ -24,7 +25,8 @@ const bucket = storage.bucket(process.env.bucket);
 const multer = Multer({
     storage: Multer.memoryStorage(),
     limits: {
-        fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+        fieldSize: 10 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+        fileSize : 25 * 1024 * 1024
     }
 });
 
@@ -45,9 +47,20 @@ router
 })
 
 .post('/', multer.single('image'), (req, res) => {
-    const file = req.file;
+    let file = req.file;
     const public = req.body.public || true;
-	console.log(file);
+    // parse json
+    if(!req.file){
+        file = JSON.parse(req.body.image);
+
+        // get buffer
+        var buffer = new Buffer.from(file.buffer.data);
+        
+        //add buffer
+        file.buffer = buffer;
+    }
+
+    // upload if file
 	if (file) {	
 		uploadImageToStorage(file, public)
 		.then((result => {
@@ -100,7 +113,7 @@ const uploadImageToStorage = (file, public) => {
 		
 
         blobStream.on('error', (error) => {
-			console.log(error);
+			// console.log(error);
 			reject('Something is wrong! Unable to upload at the moment.');
         });
 

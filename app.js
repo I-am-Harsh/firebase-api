@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
-
+console.log('started');
 module.exports = app;
 
 
