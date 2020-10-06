@@ -71,7 +71,22 @@ router
     }
 })
 
+// direct endpoint upload
 
+.post(/raw, multer.single('image'), (req, res) => {
+      let file = req.filel
+      const public = req.body.public || true;
+      
+      if(file){
+			uploadImageToStorage(file, public)
+		.then((result => {
+            console.log("URL : ",result);
+			res.status(200).json({ success : true, err : false, url : result})
+		}))
+		.catch(err => res.status(500).json({success : false, err : err, url : null}));
+
+	}
+}
 
 // ejs post
 .post('/server', multer.single('image'), (req, res, next) => {
