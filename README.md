@@ -24,3 +24,7 @@ You can use the `/upload/raw` to post using from postman for testing.
 **Note : It uses form-data and only a single file can be uploaded once **
 
 
+## Required Stuff
+* Google Account
+* Firebase project
+* keyFile.json from firebase -- the path needs to be written in env variables
